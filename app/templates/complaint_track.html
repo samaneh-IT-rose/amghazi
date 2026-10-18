@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}پیگیری شکایت | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / پیگیری شکایت</div>
+    <h1>پیگیری شکایت</h1>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container" style="max-width:620px;">
+    <div class="form-card">
+      <form action="{{ url_for('main.complaint_track') }}" method="get" style="display:flex;gap:10px;">
+        <input type="text" name="code" value="{{ code }}" placeholder="کد پیگیری (مثال: CM-000012)">
+        <button type="submit" class="btn btn-primary">جستجو</button>
+      </form>
+    </div>
+
+    {% if code %}
+      {% if complaint %}
+      <div class="form-card" style="margin-top:18px;">
+        <h3 style="color:var(--primary-deep);margin-bottom:12px;">نتیجه پیگیری</h3>
+        <div class="info-row"><span>کد پیگیری</span><span>{{ complaint.tracking_code|fa }}</span></div>
+        <div class="info-row"><span>موضوع</span><span>{{ complaint.subject or '-' }}</span></div>
+        <div class="info-row"><span>تاریخ ثبت</span><span>{{ complaint.created_at|jalali(long_month=True) }}</span></div>
+        <div class="info-row"><span>وضعیت</span><span class="status-pill status-{{ complaint.status }}">{{ complaint.status_label }}</span></div>
+        {% if complaint.admin_note %}
+        <div style="margin-top:14px;padding:12px 16px;background:var(--primary-soft);border-radius:10px;font-size:13.5px;">
+          <b>پاسخ واحد رسیدگی:</b><br>{{ complaint.admin_note|nl2br }}
+        </div>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="alert alert-error" style="margin-top:18px;">شکایتی با کد «{{ code }}» یافت نشد. کد را بررسی کنید.</div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

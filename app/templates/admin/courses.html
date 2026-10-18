@@ -1,0 +1,49 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}🎓 مدیریت دوره‌های آموزشی{% endblock %}
+
+{% block content %}
+<div class="toolbar" style="margin-bottom:18px;">
+  <a href="{{ url_for('admin.course_new') }}" class="btn btn-primary">+ افزودن دوره جدید</a>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h2>فهرست دوره‌ها ({{ courses|length|fa_num }})</h2></div>
+  <div class="panel-body p-0 table-wrap">
+    {% if courses %}
+    <table class="table">
+      <thead>
+        <tr><th>#</th><th>عنوان</th><th>مدرس</th><th>فرم</th><th>جلسات</th><th>شهریه</th><th>وضعیت</th><th>عملیات</th></tr>
+      </thead>
+      <tbody>
+        {% for item in courses %}
+        <tr>
+          <td>{{ loop.index|fa }}</td>
+          <td>{{ item.icon }} <b>{{ item.title[:45] }}{% if item.title|length > 45 %}...{% endif %}</b></td>
+          <td>{{ item.teacher.name if item.teacher else '-' }}</td>
+          <td>{{ item.format }}</td>
+          <td>{{ item.sessions_count|fa }}</td>
+          <td>{{ item.price_display }}</td>
+          <td><span class="status-pill {{ 'status-done' if item.is_active else 'status-canceled' }}">{{ 'فعال' if item.is_active else 'غیرفعال' }}</span></td>
+          <td>
+            <div class="action-cell">
+              <a href="{{ url_for('main.course_detail', cid=item.id) }}" class="icon-btn" target="_blank" title="مشاهده">👁</a>
+              <a href="{{ url_for('admin.course_edit', item_id=item.id) }}" class="icon-btn" title="ویرایش">✏️</a>
+              <form method="post" action="{{ url_for('admin.course_delete', item_id=item.id) }}" data-confirm="آیا از حذف این دوره مطمئن هستید؟" style="display:inline;">
+                <button type="submit" class="icon-btn danger" title="حذف">🗑</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">🎓</div>
+      <p>دوره‌ای ثبت نشده است.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

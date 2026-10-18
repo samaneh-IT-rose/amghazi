@@ -1,0 +1,141 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}📊 داشبورد مدیریت{% endblock %}
+
+{% block content %}
+<!-- کارت‌های آماری -->
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="ico">📅</div>
+    <div><b>{{ stats.appointments|fa_num }}</b><span>کل نوبت‌ها ({{ stats.pending_appointments|fa_num }} در انتظار)</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="ico gold">✉️</div>
+    <div><b>{{ stats.messages|fa_num }}</b><span>پیام‌ها ({{ stats.unread_messages|fa_num }} خوانده‌نشده)</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="ico red">🗂</div>
+    <div><b>{{ stats.complaints|fa_num }}</b><span>شکایات ({{ stats.new_complaints|fa_num }} جدید)</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="ico green">🌿</div>
+    <div><b>{{ stats.services|fa_num }}</b><span>خدمت فعال</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="ico">👩‍⚕️</div>
+    <div><b>{{ stats.psychologists|fa_num }}</b><span>مشاور</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="ico gold">📰</div>
+    <div><b>{{ stats.articles|fa_num }}</b><span>مقاله</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="ico green">🎓</div>
+    <div><b>{{ stats.courses|fa_num }}</b><span>دوره آموزشی</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="ico">📮</div>
+    <div><b>{{ stats.newsletter|fa_num }}</b><span>عضو خبرنامه</span></div>
+  </div>
+</div>
+
+<div class="grid grid-2" style="align-items:start;">
+  <!-- آخرین نوبت‌ها -->
+  <div class="panel">
+    <div class="panel-head">
+      <h2>آخرین نوبت‌ها</h2>
+      <a href="{{ url_for('admin.appointments') }}" class="btn btn-ghost btn-sm">مشاهده همه</a>
+    </div>
+    <div class="panel-body p-0 table-wrap">
+      {% if latest_appointments %}
+      <table class="table">
+        <thead><tr><th>کد</th><th>نام</th><th>خدمت</th><th>وضعیت</th></tr></thead>
+        <tbody>
+          {% for ap in latest_appointments %}
+          <tr>
+            <td>{{ ap.tracking_code|fa }}</td>
+            <td>{{ ap.full_name }}</td>
+            <td>{{ ap.service.title if ap.service else '-' }}</td>
+            <td><span class="status-pill status-{{ ap.status }}">{{ ap.status_label }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">هنوز نوبتی ثبت نشده است.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- آخرین پیام‌ها -->
+  <div class="panel">
+    <div class="panel-head">
+      <h2>آخرین پیام‌ها</h2>
+      <a href="{{ url_for('admin.messages') }}" class="btn btn-ghost btn-sm">مشاهده همه</a>
+    </div>
+    <div class="panel-body p-0 table-wrap">
+      {% if latest_messages %}
+      <table class="table">
+        <thead><tr><th>نام</th><th>موضوع</th><th>وضعیت</th></tr></thead>
+        <tbody>
+          {% for msg in latest_messages %}
+          <tr>
+            <td>{{ msg.name }}</td>
+            <td>{{ msg.subject or msg.message[:30] }}</td>
+            <td><span class="status-pill {{ 'status-done' if msg.is_read else 'status-pending' }}">{{ 'خوانده شده' if msg.is_read else 'جدید' }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">پیامی دریافت نشده است.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-2" style="align-items:start;">
+  <!-- وضعیت نوبت‌ها -->
+  <div class="panel">
+    <div class="panel-head"><h2>نوبت‌ها به تفکیک وضعیت</h2></div>
+    <div class="panel-body">
+      {% for label, count in status_counts.items() %}
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+          <span>{{ label }}</span><b>{{ count|fa_num }}</b>
+        </div>
+        <div style="height:9px;background:var(--primary-soft);border-radius:999px;overflow:hidden;">
+          <div style="height:100%;width:{{ (count * 100 / stats.appointments)|round(1) if stats.appointments else 0 }}%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:999px;"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- آخرین شکایات -->
+  <div class="panel">
+    <div class="panel-head">
+      <h2>آخرین شکایات</h2>
+      <a href="{{ url_for('admin.complaints') }}" class="btn btn-ghost btn-sm">مشاهده همه</a>
+    </div>
+    <div class="panel-body p-0 table-wrap">
+      {% if latest_complaints %}
+      <table class="table">
+        <thead><tr><th>کد</th><th>نام</th><th>وضعیت</th></tr></thead>
+        <tbody>
+          {% for c in latest_complaints %}
+          <tr>
+            <td>{{ c.tracking_code|fa }}</td>
+            <td>{{ c.name }}</td>
+            <td><span class="status-pill status-{{ c.status }}">{{ c.status_label }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">شکایتی ثبت نشده است.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

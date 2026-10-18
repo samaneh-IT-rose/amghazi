@@ -1,0 +1,27 @@
+# پایتون
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# دیتابیس
+*.db
+*.sqlite3
+instance/
+
+# فایل‌های محیطی و کلیدها
+.env
+*.pem
+*.key
+
+# سیستم‌عامل و ادیتور
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# لاگ‌ها
+*.log

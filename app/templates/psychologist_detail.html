@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ psychologist.name }} | مشاوران امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / <a href="{{ url_for('main.psychologists') }}">مشاوران</a> / {{ psychologist.name }}</div>
+    <h1>{{ psychologist.name }}</h1>
+    <p>{{ psychologist.title or psychologist.specialty }}</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="detail-layout">
+      <div class="content-box">
+        <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
+          <div class="avatar" style="width:100px;height:100px;font-size:32px;margin:0;">
+            {% if psychologist.image_url %}<img src="{{ psychologist.image_url }}" alt="">{% else %}{{ psychologist.initials }}{% endif %}
+          </div>
+          <div>
+            <h1 style="margin-bottom:6px;">{{ psychologist.name }}</h1>
+            <div class="stars" style="font-size:16px;">★★★★★ <span style="color:var(--muted);font-size:13px;">({{ psychologist.rating|fa }} از ۵)</span></div>
+            <div class="psych-stats" style="justify-content:flex-start;margin-top:8px;">
+              <span class="chip">{{ psychologist.degree or 'دارای مجوز رسمی' }}</span>
+              <span class="chip">{{ psychologist.experience_years|fa }} سال سابقه</span>
+              <span class="chip chip-gold">{{ psychologist.consults_count|fa_num }}+ جلسه موفق</span>
+            </div>
+          </div>
+        </div>
+        <h2>معرفی</h2>
+        <div style="font-size:15px;color:#31413f;">
+          {{ psychologist.bio|nl2br if psychologist.bio else 'معرفی این مشاور به‌زودی تکمیل می‌شود.' }}
+        </div>
+
+        {% if courses %}
+        <h2>دوره‌های این مشاور</h2>
+        <ul>
+          {% for course in courses %}
+          <li><a href="{{ url_for('main.course_detail', cid=course.id) }}">{{ course.icon }} {{ course.title }}</a></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      <div>
+        <div class="side-box">
+          <h3>مشخصات</h3>
+          <div class="info-row"><span>تخصص</span><span>{{ psychologist.specialty or '-' }}</span></div>
+          <div class="info-row"><span>مدرک</span><span>{{ psychologist.degree or '-' }}</span></div>
+          <div class="info-row"><span>زبان‌ها</span><span>{{ psychologist.languages or 'فارسی' }}</span></div>
+          <div class="info-row"><span>شیوه مشاوره</span><span>تلفنی / آنلاین</span></div>
+          <a href="{{ url_for('main.booking') }}" class="btn btn-primary btn-block" style="margin-top:14px;">📅 رزرو نوبت با {{ psychologist.name }}</a>
+        </div>
+        <div class="side-box" style="background:var(--primary-soft);">
+          <h3>نکته مهم</h3>
+          <p style="font-size:13px;color:var(--muted);">
+            تمام گفت‌وگوها در امغازی کاملاً محرمانه است و اطلاعات شما نزد مشاوران محفوظ می‌ماند.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

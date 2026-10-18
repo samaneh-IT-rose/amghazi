@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}نتایج جستجو | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / جستجو</div>
+    <h1>نتایج جستجو</h1>
+    <p>{% if q %}نتایج برای «{{ q }}» — {{ total|fa_num }} مورد یافت شد{% else %}عبارتی برای جستجو وارد کنید{% endif %}</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    {% if not total and q %}
+    <div class="empty-state card">
+      <div class="ico">🔎</div>
+      <p>نتیجه‌ای برای «{{ q }}» یافت نشد. عبارت دیگری را امتحان کنید.</p>
+    </div>
+    {% endif %}
+
+    {% if results.services %}
+    <h2 style="color:var(--primary-deep);margin:20px 0 14px;">🌿 خدمات</h2>
+    <div class="grid grid-3">
+      {% for item in results.services %}
+      <div class="card">
+        <div class="card-body">
+          <h3 style="font-size:15px;color:var(--primary-deep);">{{ item.icon }} <a href="{{ url_for('main.service_detail', slug=item.slug) }}">{{ item.title }}</a></h3>
+          <p style="font-size:13px;color:var(--muted);">{{ item.short_desc }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if results.psychologists %}
+    <h2 style="color:var(--primary-deep);margin:26px 0 14px;">👩‍⚕️ مشاوران</h2>
+    <div class="grid grid-3">
+      {% for item in results.psychologists %}
+      <div class="card">
+        <div class="card-body">
+          <h3 style="font-size:15px;color:var(--primary-deep);"><a href="{{ url_for('main.psychologist_detail', pid=item.id) }}">{{ item.name }}</a></h3>
+          <p style="font-size:13px;color:var(--muted);">{{ item.title or item.specialty }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if results.courses %}
+    <h2 style="color:var(--primary-deep);margin:26px 0 14px;">🎓 دوره‌های آموزشی</h2>
+    <div class="grid grid-3">
+      {% for item in results.courses %}
+      <div class="card">
+        <div class="card-body">
+          <h3 style="font-size:15px;color:var(--primary-deep);">{{ item.icon }} <a href="{{ url_for('main.course_detail', cid=item.id) }}">{{ item.title }}</a></h3>
+          <p style="font-size:13px;color:var(--muted);">{{ item.summary }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if results.articles %}
+    <h2 style="color:var(--primary-deep);margin:26px 0 14px;">📰 مقالات</h2>
+    <div class="grid grid-3">
+      {% for item in results.articles %}
+      <div class="card">
+        <div class="card-body">
+          <h3 style="font-size:15px;">{{ item.icon }} <a href="{{ url_for('main.article_detail', slug=item.slug) }}">{{ item.title }}</a></h3>
+          <p style="font-size:13px;color:var(--muted);">{{ item.excerpt[:100] }}...</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

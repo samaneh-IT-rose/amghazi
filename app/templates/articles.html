@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}مجله سلامت روان | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / مجله سلامت روان</div>
+    <h1>مجله سلامت روان</h1>
+    <p>مقالات تخصصی و کاربردی درباره روانشناسی، خانواده و زندگی</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    {% if categories %}
+    <div class="filter-tabs" style="margin-bottom:26px;justify-content:center;">
+      <a href="{{ url_for('main.articles') }}" class="{{ 'active' if not current_cat else '' }}">همه مقالات</a>
+      {% for cat in categories %}
+      <a href="{{ url_for('main.articles', cat=cat) }}" class="{{ 'active' if current_cat == cat else '' }}">{{ cat }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if pagination.items %}
+    <div class="grid grid-3">
+      {% for article in pagination.items %}
+      <div class="card article-card">
+        <div class="thumb">{{ article.icon }}</div>
+        <div class="card-body">
+          <span class="badge badge-primary">{{ article.category }}</span>
+          <h3 style="margin-top:8px;"><a href="{{ url_for('main.article_detail', slug=article.slug) }}">{{ article.title }}</a></h3>
+          <p class="excerpt">{{ article.excerpt[:130] }}{% if article.excerpt|length > 130 %}...{% endif %}</p>
+          <div class="meta">
+            <span>✍ {{ article.author }}</span>
+            <span>📅 {{ article.created_at|jalali(long_month=True) }}</span>
+            <span>⏱ {{ article.reading_time|fa }} دقیقه</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if pagination.pages > 1 %}
+    <div class="pagination">
+      {% if pagination.has_prev %}
+      <a href="{{ url_for('main.articles', page=pagination.prev_num, cat=current_cat) }}">→ قبلی</a>
+      {% endif %}
+      {% for p in pagination.iter_pages() %}
+        {% if p %}
+          <a href="{{ url_for('main.articles', page=p, cat=current_cat) }}" class="{{ 'active' if p == pagination.page else '' }}">{{ p|fa }}</a>
+        {% else %}
+          <span class="disabled">…</span>
+        {% endif %}
+      {% endfor %}
+      {% if pagination.has_next %}
+      <a href="{{ url_for('main.articles', page=pagination.next_num, cat=current_cat) }}">بعدی ←</a>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="empty-state card">
+      <div class="ico">📰</div>
+      <p>مقاله‌ای برای نمایش وجود ندارد.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

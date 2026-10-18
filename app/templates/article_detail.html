@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} | مجله امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / <a href="{{ url_for('main.articles') }}">مجله</a> / {{ article.title[:40] }}{% if article.title|length > 40 %}...{% endif %}</div>
+    <h1>{{ article.icon }} {{ article.title }}</h1>
+    <p>⏱ {{ article.reading_time|fa }} دقیقه مطالعه &nbsp;|&nbsp; 👁 {{ article.views|fa_num }} بازدید &nbsp;|&nbsp; 📅 {{ article.created_at|jalali(long_month=True) }}</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="detail-layout">
+      <article class="content-box">
+        <span class="badge badge-primary">{{ article.category }}</span>
+        <h1 style="margin-top:12px;">{{ article.title }}</h1>
+        <p style="color:var(--muted);font-size:14px;">نویسنده: {{ article.author }}</p>
+        <hr style="border:none;border-top:1px dashed var(--line);margin:16px 0;">
+        <div style="font-size:15.5px;">
+          {% if article.content %}
+            {{ article.content|safe if '<' in article.content else article.content|nl2br }}
+          {% else %}
+            <p>{{ article.excerpt }}</p>
+          {% endif %}
+        </div>
+      </article>
+
+      <aside>
+        <div class="side-box">
+          <h3>آخرین مقالات</h3>
+          {% for item in related %}
+          <div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);align-items:center;">
+            <span style="font-size:22px;">{{ item.icon }}</span>
+            <a href="{{ url_for('main.article_detail', slug=item.slug) }}" style="font-size:13px;font-weight:600;line-height:1.7;">{{ item.title }}</a>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="side-box" style="background:var(--primary-soft);">
+          <h3>نیاز به مشاوره دارید؟</h3>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">اگر این موضوع برای شما آزاردهنده است، با یک مشاور گفت‌وگو کنید.</p>
+          <a href="{{ url_for('main.booking') }}" class="btn btn-primary btn-block btn-sm">📅 رزرو نوبت مشاوره</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

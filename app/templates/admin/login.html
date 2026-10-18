@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ورود به پنل مدیریت | امغازی</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="admin-login-page">
+  <div class="admin-login-card">
+    <div class="brand-logo">🌿</div>
+    <h1>پنل مدیریت امغازی</h1>
+    <div class="sub">برای ورود، اطلاعات حساب خود را وارد کنید</div>
+
+    {% if error %}
+    <div class="alert alert-error">⚠ {{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+      <div class="form-group">
+        <label>نام کاربری</label>
+        <input type="text" name="username" autofocus required>
+      </div>
+      <div class="form-group">
+        <label>رمز عبور</label>
+        <input type="password" name="password" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">ورود به پنل</button>
+    </form>
+
+    <p style="text-align:center;font-size:12.5px;color:var(--muted);margin-top:18px;">
+      <a href="{{ url_for('main.index') }}">← بازگشت به سایت</a>
+    </p>
+  </div>
+</div>
+</body>
+</html>

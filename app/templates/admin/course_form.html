@@ -1,0 +1,78 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}{{ 'ویرایش دوره: ' ~ item.title[:30] if item else 'دوره جدید' }}{% endblock %}
+
+{% block content %}
+<div class="panel" style="max-width:780px;">
+  <div class="panel-head">
+    <h2>{{ 'ویرایش دوره' if item else 'دوره جدید' }}</h2>
+    <a href="{{ url_for('admin.courses') }}" class="btn btn-ghost btn-sm">← بازگشت به فهرست</a>
+  </div>
+  <div class="panel-body">
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>عنوان دوره <span class="req">*</span></label>
+          <input type="text" name="title" value="{{ item.title if item else '' }}" required placeholder="مثال: کارگاه مدیریت اضطراب">
+        </div>
+        <div class="form-group">
+          <label>مدرس</label>
+          <select name="teacher_id">
+            <option value="">— تدریس اختصاصی —</option>
+            {% for t in teachers %}
+            <option value="{{ t.id }}" {{ 'selected' if item and item.teacher_id == t.id }}>{{ t.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>آیکون (ایموجی)</label>
+          <input type="text" name="icon" value="{{ item.icon if item else '🎓' }}" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label>شهریه (تومان) — صفر = رایگان</label>
+          <input type="number" name="price" value="{{ item.price if item else 0 }}" min="0" step="1000">
+        </div>
+        <div class="form-group">
+          <label>فرم برگزاری</label>
+          <select name="format">
+            {% for f in ['آنلاین', 'حضوری', 'ضبط‌شده'] %}
+            <option value="{{ f }}" {{ 'selected' if item and item.format == f }}>{{ f }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>تعداد جلسات</label>
+          <input type="number" name="sessions_count" value="{{ item.sessions_count if item else 1 }}" min="1">
+        </div>
+        <div class="form-group">
+          <label>مدت هر جلسه (دقیقه)</label>
+          <input type="number" name="duration_minutes" value="{{ item.duration_minutes if item else 90 }}" min="15">
+        </div>
+        <div class="form-group">
+          <label>ظرفیت (نفر)</label>
+          <input type="number" name="capacity" value="{{ item.capacity if item else 30 }}" min="1">
+        </div>
+        <div class="form-group">
+          <label>تاریخ شروع (شمسی)</label>
+          <input type="text" name="start_date" value="{{ item.start_date if item else '' }}" placeholder="مثال: ۱۴۰۴/۰۹/۰۱">
+        </div>
+        <div class="form-group full">
+          <label>خلاصه دوره</label>
+          <textarea name="summary" style="min-height:70px;" maxlength="400" placeholder="معرفی کوتاه دوره برای کارت‌ها...">{{ item.summary if item else '' }}</textarea>
+        </div>
+        <div class="form-group full">
+          <label>شرح کامل دوره</label>
+          <textarea name="description" style="min-height:200px;" placeholder="سرفصل‌ها، مخاطبان دوره و ... (HTML ساده مجاز است)">{{ item.description if item else '' }}</textarea>
+        </div>
+        <div class="form-group">
+          <div class="checkbox-row">
+            <input type="checkbox" name="is_active" id="is_active" {{ 'checked' if (item and item.is_active) or not item }}>
+            <label for="is_active">فعال باشد</label>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg">💾 ذخیره</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

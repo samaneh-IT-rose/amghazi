@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} | دوره‌های امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / <a href="{{ url_for('main.courses') }}">دوره‌های آموزشی</a> / {{ course.title }}</div>
+    <h1>{{ course.icon }} {{ course.title }}</h1>
+    <p>{{ course.summary }}</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="detail-layout">
+      <div class="content-box">
+        <span class="badge badge-accent">{{ course.format }}</span>
+        <h1 style="margin-top:10px;">{{ course.title }}</h1>
+        <div style="font-size:15px;color:#31413f;">
+          {{ course.description|safe if '<' in course.description else course.description|nl2br if course.description else course.summary }}
+        </div>
+      </div>
+
+      <div>
+        <div class="side-box">
+          <h3>مشخصات دوره</h3>
+          <div class="info-row"><span>مدرس</span><span>{{ course.teacher.name if course.teacher else 'تدریس اختصاصی' }}</span></div>
+          <div class="info-row"><span>تعداد جلسات</span><span>{{ course.sessions_count|fa }} جلسه</span></div>
+          <div class="info-row"><span>مدت هر جلسه</span><span>{{ course.duration_minutes|fa }} دقیقه</span></div>
+          <div class="info-row"><span>ظرفیت</span><span>{{ course.capacity|fa_num }} نفر</span></div>
+          {% if course.start_date %}<div class="info-row"><span>شروع دوره</span><span>{{ course.start_date }}</span></div>{% endif %}
+          <div class="info-row"><span>شهریه</span><span style="color:var(--accent);">{{ course.price_display }}</span></div>
+          <a href="{{ url_for('main.contact') }}" class="btn btn-primary btn-block" style="margin-top:14px;">ثبت‌نام / سؤال درباره دوره</a>
+        </div>
+
+        {% if others %}
+        <div class="side-box">
+          <h3>دوره‌های دیگر</h3>
+          {% for item in others %}
+          <div style="padding:8px 0;border-bottom:1px dashed var(--line);">
+            <a href="{{ url_for('main.course_detail', cid=item.id) }}" style="font-weight:600;font-size:13.5px;">{{ item.icon }} {{ item.title }}</a>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

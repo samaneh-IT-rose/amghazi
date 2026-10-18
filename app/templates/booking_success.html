@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}رزرو با موفقیت ثبت شد | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / رزرو نوبت</div>
+    <h1>✅ درخواست شما ثبت شد</h1>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container" style="max-width:620px;">
+    <div class="form-card" style="text-align:center;">
+      <div style="font-size:52px;margin-bottom:10px;">🎉</div>
+      <h2 style="color:var(--primary-deep);margin-bottom:8px;">درخواست رزرو نوبت با موفقیت ثبت شد</h2>
+      <p style="color:var(--muted);font-size:14px;">کد پیگیری نوبت شما:</p>
+      <div style="font-size:26px;font-weight:800;color:var(--primary);letter-spacing:2px;margin:8px 0 18px;">{{ appointment.tracking_code|fa }}</div>
+      <div class="info-row"><span>نام</span><span>{{ appointment.full_name }}</span></div>
+      <div class="info-row"><span>خدمت</span><span>{{ appointment.service.title if appointment.service else '-' }}</span></div>
+      <div class="info-row"><span>مشاور</span><span>{{ appointment.psychologist.name if appointment.psychologist else 'پیشنهاد سامانه' }}</span></div>
+      <div class="info-row"><span>تاریخ پیشنهادی</span><span>{{ appointment.preferred_date or '-' }}</span></div>
+      <div class="info-row"><span>وضعیت</span><span class="status-pill status-pending">در انتظار بررسی</span></div>
+      <p style="font-size:13.5px;color:var(--muted);margin-top:18px;">
+        کارشناسان ما طی چند ساعت کاری برای تأیید نهایی با شما تماس می‌گیرند.
+      </p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap;">
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">بازگشت به صفحه اصلی</a>
+        <a href="{{ url_for('main.services') }}" class="btn btn-ghost">مشاهده خدمات دیگر</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}🌿 مدیریت خدمات{% endblock %}
+
+{% block content %}
+<div class="toolbar" style="margin-bottom:18px;">
+  <a href="{{ url_for('admin.service_new') }}" class="btn btn-primary">+ افزودن خدمت جدید</a>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h2>فهرست خدمات ({{ services|length|fa_num }})</h2></div>
+  <div class="panel-body p-0 table-wrap">
+    {% if services %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th><th>آیکون</th><th>عنوان</th><th>تعرفه</th><th>مدت</th><th>ترتیب</th><th>وضعیت</th><th>عملیات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in services %}
+        <tr>
+          <td>{{ loop.index|fa }}</td>
+          <td style="font-size:20px;">{{ item.icon }}</td>
+          <td>
+            <b>{{ item.title }}</b><br>
+            <span style="font-size:11.5px;color:var(--muted);">{{ item.short_desc[:60] }}</span>
+          </td>
+          <td>{{ item.price_display }}</td>
+          <td>{{ item.duration_minutes|fa }} دقیقه</td>
+          <td>{{ item.sort_order|fa }}</td>
+          <td><span class="status-pill {{ 'status-done' if item.is_active else 'status-canceled' }}">{{ 'فعال' if item.is_active else 'غیرفعال' }}</span></td>
+          <td>
+            <div class="action-cell">
+              <a href="{{ url_for('main.service_detail', slug=item.slug) }}" class="icon-btn" target="_blank" title="مشاهده">👁</a>
+              <a href="{{ url_for('admin.service_edit', item_id=item.id) }}" class="icon-btn" title="ویرایش">✏️</a>
+              <form method="post" action="{{ url_for('admin.service_delete', item_id=item.id) }}" data-confirm="آیا از حذف «{{ item.title }}» مطمئن هستید؟" style="display:inline;">
+                <button type="submit" class="icon-btn danger" title="حذف">🗑</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">🌿</div>
+      <p>هنوز خدمتی ثبت نشده است. با دکمه «افزودن خدمت جدید» شروع کنید.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

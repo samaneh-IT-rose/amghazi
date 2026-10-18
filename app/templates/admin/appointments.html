@@ -1,0 +1,75 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}📅 مدیریت نوبت‌ها{% endblock %}
+
+{% block content %}
+<div class="toolbar" style="margin-bottom:18px;justify-content:space-between;">
+  <div class="filter-tabs">
+    <a href="{{ url_for('admin.appointments') }}" class="{{ 'active' if not current_status else '' }}">همه</a>
+    {% for code, label in {'pending': 'در انتظار بررسی', 'confirmed': 'تأیید شده', 'done': 'انجام شده', 'canceled': 'لغو شده'}.items() %}
+    <a href="{{ url_for('admin.appointments', status=code) }}" class="{{ 'active' if current_status == code else '' }}">{{ label }}</a>
+    {% endfor %}
+  </div>
+  <a href="{{ url_for('admin.appointments_export') }}" class="btn btn-ghost">⬇ دانلود CSV</a>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h2>نوبت‌ها ({{ pagination.total|fa_num }} مورد)</h2></div>
+  <div class="panel-body p-0 table-wrap">
+    {% if pagination.items %}
+    <table class="table">
+      <thead>
+        <tr><th>کد</th><th>نام</th><th>تلفن</th><th>خدمت</th><th>مشاور</th><th>زمان پیشنهادی</th><th>توضیحات</th><th>وضعیت</th><th>عملیات</th></tr>
+      </thead>
+      <tbody>
+        {% for ap in pagination.items %}
+        <tr>
+          <td><b>{{ ap.tracking_code|fa }}</b></td>
+          <td>{{ ap.full_name }}</td>
+          <td><span dir="ltr">{{ ap.phone }}</span></td>
+          <td>{{ ap.service.title if ap.service else '-' }}</td>
+          <td>{{ ap.psychologist.name if ap.psychologist else '-' }}</td>
+          <td>
+            {% if ap.preferred_date %}{{ ap.preferred_date }}{% endif %}
+            {% if ap.preferred_time %}<span style="font-size:11.5px;color:var(--muted);">{{ ap.preferred_time }}</span>{% endif %}
+            {% if not ap.preferred_date and not ap.preferred_time %}-{% endif %}
+          </td>
+          <td style="max-width:160px;font-size:12px;color:var(--muted);">{{ (ap.note[:60] ~ '...') if ap.note|length > 60 else (ap.note or '-') }}</td>
+          <td><span class="status-pill status-{{ ap.status }}">{{ ap.status_label }}</span></td>
+          <td>
+            <div class="action-cell">
+              <form method="post" action="{{ url_for('admin.appointment_status', item_id=ap.id) }}" style="display:inline;">
+                <select name="status" onchange="this.form.submit()" style="padding:5px 8px;font-size:12px;width:auto;">
+                  {% for code, label in ap.STATUS_CHOICES.items() %}
+                  <option value="{{ code }}" {{ 'selected' if ap.status == code }}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </form>
+              <form method="post" action="{{ url_for('admin.appointment_delete', item_id=ap.id) }}" data-confirm="آیا از حذف این نوبت مطمئن هستید؟" style="display:inline;">
+                <button type="submit" class="icon-btn danger" title="حذف">🗑</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">📅</div>
+      <p>نوبتی در این دسته وجود ندارد.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if pagination.pages > 1 %}
+<div class="pagination">
+  {% if pagination.has_prev %}<a href="{{ url_for('admin.appointments', page=pagination.prev_num, status=current_status) }}">→ قبلی</a>{% endif %}
+  {% for p in pagination.iter_pages() %}
+    {% if p %}<a href="{{ url_for('admin.appointments', page=p, status=current_status) }}" class="{{ 'active' if p == pagination.page else '' }}">{{ p|fa }}</a>{% else %}<span class="disabled">…</span>{% endif %}
+  {% endfor %}
+  {% if pagination.has_next %}<a href="{{ url_for('admin.appointments', page=pagination.next_num, status=current_status) }}">بعدی ←</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

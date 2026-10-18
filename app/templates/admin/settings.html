@@ -1,0 +1,91 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}⚙️ تنظیمات{% endblock %}
+
+{% block content %}
+<div class="filter-tabs" style="margin-bottom:18px;">
+  <a href="{{ url_for('admin.settings', tab='site') }}" class="{{ 'active' if tab == 'site' else '' }}">تنظیمات سایت</a>
+  <a href="{{ url_for('admin.settings', tab='account') }}" class="{{ 'active' if tab == 'account' else '' }}">حساب مدیر</a>
+</div>
+
+{% if tab == 'site' %}
+<div class="panel" style="max-width:780px;">
+  <div class="panel-head"><h2>اطلاعات و محتوای سایت</h2></div>
+  <div class="panel-body">
+    <form method="post">
+      <input type="hidden" name="form_type" value="site">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>عنوان سایت</label>
+          <input type="text" name="site_title" value="{{ settings.site_title }}">
+        </div>
+        <div class="form-group">
+          <label>شعار سایت</label>
+          <input type="text" name="tagline" value="{{ settings.tagline }}">
+        </div>
+        <div class="form-group">
+          <label>تلفن پشتیبانی</label>
+          <input type="text" name="support_phone" value="{{ settings.support_phone }}">
+        </div>
+        <div class="form-group">
+          <label>خط ویژه (هات‌لاین)</label>
+          <input type="text" name="hotline" value="{{ settings.hotline }}">
+        </div>
+        <div class="form-group">
+          <label>ایمیل</label>
+          <input type="email" name="email" value="{{ settings.email }}">
+        </div>
+        <div class="form-group">
+          <label>ساعات پاسخگویی</label>
+          <input type="text" name="working_hours" value="{{ settings.working_hours }}">
+        </div>
+        <div class="form-group full">
+          <label>نشانی</label>
+          <input type="text" name="address" value="{{ settings.address }}">
+        </div>
+        <div class="form-group">
+          <label>اینستاگرام (آدرس)</label>
+          <input type="url" name="instagram" value="{{ settings.instagram }}" placeholder="https://instagram.com/...">
+        </div>
+        <div class="form-group">
+          <label>تلگرام (آدرس)</label>
+          <input type="url" name="telegram" value="{{ settings.telegram }}" placeholder="https://t.me/...">
+        </div>
+        <div class="form-group full">
+          <label>متن درباره ما (صفحه اصلی فوتر و درباره)</label>
+          <textarea name="about_text" style="min-height:110px;">{{ settings.about_text }}</textarea>
+        </div>
+        <div class="form-group full">
+          <label>یادداشت کپی‌رایت فوتر</label>
+          <input type="text" name="footer_note" value="{{ settings.footer_note }}">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg">💾 ذخیره تنظیمات</button>
+    </form>
+  </div>
+</div>
+{% else %}
+<div class="panel" style="max-width:520px;">
+  <div class="panel-head"><h2>تغییر رمز عبور</h2></div>
+  <div class="panel-body">
+    <form method="post">
+      <input type="hidden" name="form_type" value="password">
+      <div class="form-group">
+        <label>رمز عبور فعلی <span class="req">*</span></label>
+        <input type="password" name="old_password" required>
+      </div>
+      <div class="form-group">
+        <label>رمز عبور جدید <span class="req">*</span></label>
+        <input type="password" name="new_password" required minlength="6">
+        <div class="help-text">حداقل ۶ کاراکتر.</div>
+      </div>
+      <div class="form-group">
+        <label>تکرار رمز جدید <span class="req">*</span></label>
+        <input type="password" name="confirm_password" required minlength="6">
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg">🔑 تغییر رمز</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

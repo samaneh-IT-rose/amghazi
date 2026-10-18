@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}شکایت شما ثبت شد | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <h1>✅ شکایت شما ثبت شد</h1>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container" style="max-width:560px;">
+    <div class="form-card" style="text-align:center;">
+      <div style="font-size:48px;margin-bottom:10px;">🗂</div>
+      <h2 style="color:var(--primary-deep);margin-bottom:10px;">شکایت شما در سامانه ثبت شد</h2>
+      <p style="color:var(--muted);font-size:14px;">کد پیگیری شکایت:</p>
+      <div style="font-size:26px;font-weight:800;color:var(--primary);letter-spacing:2px;margin:8px 0 16px;">{{ complaint.tracking_code|fa }}</div>
+      <div class="info-row" style="text-align:right;"><span>وضعیت فعلی</span><span class="status-pill status-new">ثبت شده</span></div>
+      <p style="font-size:13.5px;color:var(--muted);margin-top:16px;">
+        کد پیگیری را نزد خود نگه دارید. نتیجه بررسی حداکثر تا ۴۸ ساعت کاری اعلام می‌شود.
+      </p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap;">
+        <a href="{{ url_for('main.complaint_track', code=complaint.tracking_code) }}" class="btn btn-primary">پیگیری شکایت</a>
+        <a href="{{ url_for('main.index') }}" class="btn btn-ghost">صفحه اصلی</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

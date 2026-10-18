@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}صفحه پیدا نشد | امغازی{% endblock %}
+
+{% block body %}
+<section class="section" style="min-height:420px;display:flex;align-items:center;">
+  <div class="container" style="text-align:center;">
+    <div style="font-size:64px;margin-bottom:12px;">🧭</div>
+    <h1 style="color:var(--primary-deep);font-size:30px;margin-bottom:8px;">صفحه موردنظر پیدا نشد</h1>
+    <p style="color:var(--muted);margin-bottom:22px;">آدرس وارد شده وجود ندارد یا حذف شده است. از راه‌های زیر ادامه دهید:</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <a href="{{ url_for('main.index') }}" class="btn btn-primary">صفحه اصلی</a>
+      <a href="{{ url_for('main.services') }}" class="btn btn-ghost">خدمات مشاوره</a>
+      <a href="{{ url_for('main.search') }}?q=" class="btn btn-ghost">جستجو</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

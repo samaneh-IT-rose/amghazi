@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}{{ service.title }} | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / <a href="{{ url_for('main.services') }}">خدمات</a> / {{ service.title }}</div>
+    <h1>{{ service.icon }} {{ service.title }}</h1>
+    <p>{{ service.short_desc }}</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="detail-layout">
+      <div class="content-box">
+        <h1>{{ service.title }}</h1>
+        <div style="font-size:15px;color:#31413f;">
+          {{ service.description|safe if '<' in service.description else service.description|nl2br }}
+        </div>
+      </div>
+
+      <div>
+        <div class="side-box">
+          <h3>اطلاعات خدمت</h3>
+          <div class="info-row"><span>مدت جلسه</span><span>{{ service.duration_minutes|fa }} دقیقه</span></div>
+          <div class="info-row"><span>نوع جلسه</span><span>تلفنی / آنلاین</span></div>
+          <div class="info-row"><span>تعرفه</span><span style="color:var(--accent);">{{ service.price_display }}</span></div>
+          <div class="info-row"><span>پاسخگویی</span><span>شبانه‌روزی</span></div>
+          <a href="{{ url_for('main.booking', service=service.id) }}" class="btn btn-primary btn-block" style="margin-top:14px;">📅 رزرو این خدمت</a>
+        </div>
+
+        <div class="side-box">
+          <h3>مشاوران پیشنهادی</h3>
+          {% for psych in psychologists %}
+          <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);">
+            <div class="avatar" style="width:44px;height:44px;font-size:15px;margin:0;">
+              {% if psych.image_url %}<img src="{{ psych.image_url }}" alt="">{% else %}{{ psych.initials }}{% endif %}
+            </div>
+            <div style="flex:1;">
+              <a href="{{ url_for('main.psychologist_detail', pid=psych.id) }}" style="font-weight:700;font-size:13.5px;">{{ psych.name }}</a>
+              <div style="font-size:11.5px;color:var(--muted);">{{ psych.specialty or psych.title }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {% if related %}
+    <div class="section-head" style="margin-top:50px;">
+      <h2>خدمات دیگر</h2>
+    </div>
+    <div class="grid grid-4">
+      {% for item in related %}
+      <div class="card service-card">
+        <div class="service-icon">{{ item.icon }}</div>
+        <div class="card-body">
+          <h3>{{ item.title }}</h3>
+          <div class="service-price">{{ item.price_display }}</div>
+          <a href="{{ url_for('main.service_detail', slug=item.slug) }}" class="btn btn-ghost btn-sm">جزئیات</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

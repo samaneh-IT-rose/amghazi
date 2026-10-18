@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}پیام شما ارسال شد | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <h1>✅ پیام شما ارسال شد</h1>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container" style="max-width:560px;">
+    <div class="form-card" style="text-align:center;">
+      <div style="font-size:48px;margin-bottom:10px;">📨</div>
+      <h2 style="color:var(--primary-deep);margin-bottom:10px;">پیام شما با موفقیت ارسال شد</h2>
+      <p style="color:var(--muted);font-size:14px;">کارشناسان ما در اولین فرصت پاسخگوی شما خواهند بود.</p>
+      <a href="{{ url_for('main.index') }}" class="btn btn-primary" style="margin-top:16px;">بازگشت به صفحه اصلی</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

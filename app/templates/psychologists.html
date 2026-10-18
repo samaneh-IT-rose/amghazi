@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}مشاوران امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / مشاوران</div>
+    <h1>مشاوران امغازی</h1>
+    <p>شناخت مشاوران متخصص و انتخاب بهترین همراه برای مسیر سلامت روان شما</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:10px;">
+  <div class="container">
+    {% if psychologists %}
+    <div class="grid grid-3">
+      {% for psych in psychologists %}
+      <div class="card psych-card">
+        <div class="avatar">
+          {% if psych.image_url %}<img src="{{ psych.image_url }}" alt="{{ psych.name }}">{% else %}{{ psych.initials }}{% endif %}
+        </div>
+        <div class="card-body">
+          <h3>{{ psych.name }}</h3>
+          <div class="role">{{ psych.title or '' }}</div>
+          {% if psych.specialty %}<div style="font-size:12.5px;color:var(--primary-dark);font-weight:600;">{{ psych.specialty }}</div>{% endif %}
+          <div class="stars">★★★★★ <span style="color:var(--muted);font-size:12px;">{{ psych.rating|fa }}</span></div>
+          <div class="psych-stats">
+            <span class="chip">{{ psych.degree or 'مجوز رسمی' }}</span>
+            <span class="chip">{{ psych.experience_years|fa }} سال تجربه</span>
+            <span class="chip chip-gold">{{ psych.consults_count|fa_num }}+ مشاوره</span>
+          </div>
+          <a href="{{ url_for('main.psychologist_detail', pid=psych.id) }}" class="btn btn-ghost btn-sm">معرفی کامل</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state card">
+      <div class="ico">👩‍⚕️</div>
+      <p>هنوز مشاوری معرفی نشده است.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

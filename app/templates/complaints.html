@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}ثبت شکایات | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / ثبت شکایات</div>
+    <h1>ثبت شکایات</h1>
+    <p>رضایت شما برای ما مهم است؛ هر شکایتی با دقت بررسی می‌شود.</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="detail-layout">
+      <div>
+        {% if error %}<div class="alert alert-error">⚠ {{ error }}</div>{% endif %}
+        <div class="form-card">
+          <form method="post" action="{{ url_for('main.complaints') }}">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>نام و نام خانوادگی <span class="req">*</span></label>
+                <input type="text" name="name" value="{{ form.get('name', '') }}" required>
+              </div>
+              <div class="form-group">
+                <label>شماره تماس <span class="req">*</span></label>
+                <input type="tel" name="phone" value="{{ form.get('phone', '') }}" placeholder="09121234567" required>
+              </div>
+              <div class="form-group full">
+                <label>موضوع شکایت</label>
+                <input type="text" name="subject" value="{{ form.get('subject', '') }}" placeholder="مثال: کیفیت جلسه مشاوره، زمان‌بندی و ...">
+              </div>
+              <div class="form-group full">
+                <label>شرح شکایت <span class="req">*</span></label>
+                <textarea name="message" placeholder="لطفاً شرح کاملی از موضوع ارائه دهید..." required>{{ form.get('message', '') }}</textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-danger btn-block">ثبت شکایت</button>
+          </form>
+        </div>
+      </div>
+
+      <div>
+        <div class="side-box">
+          <h3>فرآیند رسیدگی</h3>
+          <div class="info-row"><span>۱. ثبت شکایت</span><span>آنلاین</span></div>
+          <div class="info-row"><span>۲. بررسی اولیه</span><span>تا ۴۸ ساعت</span></div>
+          <div class="info-row"><span>۳. تماس کارشناس</span><span>برای شفاف‌سازی</span></div>
+          <div class="info-row"><span>۴. اعلام نتیجه</span><span>کتبی</span></div>
+        </div>
+        <div class="side-box">
+          <h3>پیگیری شکایت قبلی</h3>
+          <form action="{{ url_for('main.complaint_track') }}" method="get" style="display:flex;gap:8px;">
+            <input type="text" name="code" placeholder="مثال: CM-000012">
+            <button type="submit" class="btn btn-primary btn-sm">پیگیری</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

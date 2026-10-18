@@ -1,0 +1,70 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}{{ 'ویرایش مشاور: ' ~ item.name if item else 'افزودن مشاور جدید' }}{% endblock %}
+
+{% block content %}
+<div class="panel" style="max-width:760px;">
+  <div class="panel-head">
+    <h2>{{ 'ویرایش مشاور' if item else 'مشاور جدید' }}</h2>
+    <a href="{{ url_for('admin.psychologists') }}" class="btn btn-ghost btn-sm">← بازگشت به فهرست</a>
+  </div>
+  <div class="panel-body">
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>نام و نام خانوادگی <span class="req">*</span></label>
+          <input type="text" name="name" value="{{ item.name if item else '' }}" required placeholder="مثال: دکتر سارا محمدی">
+        </div>
+        <div class="form-group">
+          <label>عنوان شغلی</label>
+          <input type="text" name="title" value="{{ item.title if item else '' }}" placeholder="مثال: کارشناس ارشد روانشناسی بالینی">
+        </div>
+        <div class="form-group">
+          <label>حوزه تخصصی</label>
+          <input type="text" name="specialty" value="{{ item.specialty if item else '' }}" placeholder="مثال: زوج درمانی، اضطراب">
+        </div>
+        <div class="form-group">
+          <label>مدرک</label>
+          <input type="text" name="degree" value="{{ item.degree if item else '' }}" placeholder="مثال: دکترای روانشناسی">
+        </div>
+        <div class="form-group">
+          <label>زبان‌ها</label>
+          <input type="text" name="languages" value="{{ item.languages if item else 'فارسی' }}">
+        </div>
+        <div class="form-group">
+          <label>سابقه (سال)</label>
+          <input type="number" name="experience_years" value="{{ item.experience_years if item else 1 }}" min="0">
+        </div>
+        <div class="form-group">
+          <label>تعداد مشاوره‌های موفق</label>
+          <input type="number" name="consults_count" value="{{ item.consults_count if item else 0 }}" min="0">
+        </div>
+        <div class="form-group">
+          <label>امتیاز (۰ تا ۵)</label>
+          <input type="number" name="rating" value="{{ item.rating if item else 4.5 }}" min="0" max="5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>ترتیب نمایش</label>
+          <input type="number" name="sort_order" value="{{ item.sort_order if item else 0 }}">
+        </div>
+        <div class="form-group full">
+          <label>آدرس تصویر (اختیاری)</label>
+          <input type="url" name="image_url" value="{{ item.image_url if item else '' }}" placeholder="https://example.com/photo.jpg">
+          <div class="help-text">اگر خالی بماند، آواتار متنی با حروف اول نام نمایش داده می‌شود.</div>
+        </div>
+        <div class="form-group full">
+          <label>بیوگرافی</label>
+          <textarea name="bio" style="min-height:180px;" placeholder="معرفی حرفه‌ای مشاور...">{{ item.bio if item else '' }}</textarea>
+        </div>
+        <div class="form-group">
+          <div class="checkbox-row">
+            <input type="checkbox" name="is_active" id="is_active" {{ 'checked' if (item and item.is_active) or not item }}>
+            <label for="is_active">فعال باشد</label>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg">💾 ذخیره</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

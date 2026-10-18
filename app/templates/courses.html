@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}دوره‌های آموزشی | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / دوره‌های آموزشی</div>
+    <h1>دوره‌های آموزشی امغازی</h1>
+    <p>کارگاه‌ها و دوره‌های تخصصی سلامت روان و مهارت‌های زندگی</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:10px;">
+  <div class="container">
+    {% if courses %}
+    <div class="grid grid-3">
+      {% for course in courses %}
+      <div class="card course-card">
+        <div class="thumb">{{ course.icon }}</div>
+        <div class="card-body">
+          <span class="badge badge-accent">{{ course.format }}</span>
+          <h3 style="margin-top:8px;"><a href="{{ url_for('main.course_detail', cid=course.id) }}">{{ course.title }}</a></h3>
+          <p style="font-size:13px;color:var(--muted);">{{ course.summary[:120] }}{% if course.summary|length > 120 %}...{% endif %}</p>
+          <div class="service-meta" style="justify-content:flex-start;">
+            <span>👨‍🏫 {{ course.teacher.name if course.teacher else 'تدریس اختصاصی' }}</span>
+            <span>🎬 {{ course.sessions_count|fa }} جلسه</span>
+            {% if course.start_date %}<span>🗓 {{ course.start_date }}</span>{% endif %}
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+            <span class="service-price" style="margin:0;">{{ course.price_display }}</span>
+            <a href="{{ url_for('main.course_detail', cid=course.id) }}" class="btn btn-primary btn-sm">مشاهده دوره</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state card">
+      <div class="ico">🎓</div>
+      <p>هنوز دوره‌ای ثبت نشده است. به‌زودی دوره‌های جدید اعلام می‌شوند.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

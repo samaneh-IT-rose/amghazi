@@ -1,0 +1,56 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}✉️ پیام‌های تماس{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-head"><h2>پیام‌های دریافتی ({{ pagination.total|fa_num }})</h2></div>
+  <div class="panel-body p-0">
+    {% if pagination.items %}
+    {% for msg in pagination.items %}
+    <div style="padding:16px 20px;border-bottom:1px solid var(--line);{{ 'background:#fafdfc;' if not msg.is_read }}">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+        <div>
+          <b>{{ msg.name }}</b>
+          {% if not msg.is_read %}<span class="status-pill status-pending" style="margin-inline-start:8px;">جدید</span>{% endif %}
+          {% if msg.subject %}<span style="color:var(--muted);font-size:13px;">— {{ msg.subject }}</span>{% endif %}
+        </div>
+        <div style="font-size:12px;color:var(--muted);">{{ msg.created_at|jalali(with_time=True) }}</div>
+      </div>
+      <div style="font-size:13.5px;color:#31413f;margin-top:8px;">{{ msg.message|nl2br }}</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:8px;">
+        {% if msg.email %}✉ <span dir="ltr">{{ msg.email }}</span> &nbsp;{% endif %}
+        {% if msg.phone %}☎ <span dir="ltr">{{ msg.phone }}</span>{% endif %}
+      </div>
+      <div class="action-cell" style="margin-top:10px;">
+        <form method="post" action="{{ url_for('admin.message_toggle', item_id=msg.id) }}" style="display:inline;">
+          <button type="submit" class="btn btn-ghost btn-sm">{{ 'علامت‌گذاری خوانده‌نشده' if msg.is_read else 'علامت‌گذاری خوانده‌شده' }}</button>
+        </form>
+        {% if msg.email %}
+        <a href="mailto:{{ msg.email }}" class="btn btn-ghost btn-sm">پاسخ با ایمیل</a>
+        {% endif %}
+        <form method="post" action="{{ url_for('admin.message_delete', item_id=msg.id) }}" data-confirm="آیا از حذف این پیام مطمئن هستید؟" style="display:inline;">
+          <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">✉️</div>
+      <p>پیامی دریافت نشده است.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if pagination.pages > 1 %}
+<div class="pagination">
+  {% if pagination.has_prev %}<a href="{{ url_for('admin.messages', page=pagination.prev_num) }}">→ قبلی</a>{% endif %}
+  {% for p in pagination.iter_pages() %}
+    {% if p %}<a href="{{ url_for('admin.messages', page=p) }}" class="{{ 'active' if p == pagination.page else '' }}">{{ p|fa }}</a>{% else %}<span class="disabled">…</span>{% endif %}
+  {% endfor %}
+  {% if pagination.has_next %}<a href="{{ url_for('admin.messages', page=pagination.next_num) }}">بعدی ←</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

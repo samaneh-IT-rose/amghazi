@@ -1,0 +1,56 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}👩‍⚕️ مدیریت مشاوران{% endblock %}
+
+{% block content %}
+<div class="toolbar" style="margin-bottom:18px;">
+  <a href="{{ url_for('admin.psychologist_new') }}" class="btn btn-primary">+ افزودن مشاور جدید</a>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h2>فهرست مشاوران ({{ psychologists|length|fa_num }})</h2></div>
+  <div class="panel-body p-0 table-wrap">
+    {% if psychologists %}
+    <table class="table">
+      <thead>
+        <tr><th>#</th><th>نام</th><th>عنوان شغلی</th><th>تخصص</th><th>تجربه</th><th>امتیاز</th><th>وضعیت</th><th>عملیات</th></tr>
+      </thead>
+      <tbody>
+        {% for item in psychologists %}
+        <tr>
+          <td>{{ loop.index|fa }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="avatar" style="width:36px;height:36px;font-size:13px;margin:0;">
+                {% if item.image_url %}<img src="{{ item.image_url }}" alt="">{% else %}{{ item.initials }}{% endif %}
+              </div>
+              <b>{{ item.name }}</b>
+            </div>
+          </td>
+          <td>{{ item.title or '-' }}</td>
+          <td>{{ item.specialty or '-' }}</td>
+          <td>{{ item.experience_years|fa }} سال</td>
+          <td>{{ item.rating|fa }}</td>
+          <td><span class="status-pill {{ 'status-done' if item.is_active else 'status-canceled' }}">{{ 'فعال' if item.is_active else 'غیرفعال' }}</span></td>
+          <td>
+            <div class="action-cell">
+              <a href="{{ url_for('main.psychologist_detail', pid=item.id) }}" class="icon-btn" target="_blank" title="مشاهده">👁</a>
+              <a href="{{ url_for('admin.psychologist_edit', item_id=item.id) }}" class="icon-btn" title="ویرایش">✏️</a>
+              <form method="post" action="{{ url_for('admin.psychologist_delete', item_id=item.id) }}" data-confirm="آیا از حذف «{{ item.name }}» مطمئن هستید؟ دوره‌های او بدون مدرس خواهند شد." style="display:inline;">
+                <button type="submit" class="icon-btn danger" title="حذف">🗑</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">👩‍⚕️</div>
+      <p>هنوز مشاوری ثبت نشده است.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

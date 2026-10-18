@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block body %}
+<!-- بخش اصلی (هیرو) -->
+<section class="hero">
+  <div class="container">
+    <div>
+      <span class="hero-badge">✨ مرکز مشاوره تلفنی و آنلاین امغازی</span>
+      <h1>سلامت روان شما،<br><span class="hl">اولویت ماست</span></h1>
+      <p class="lead">
+        با مشاوران متخصص و مجرب امغازی، هر ساعت از شبانه‌روز می‌توانید نوبت مشاوره تلفنی، صوتی و متنی رزرو کنید؛
+        همه‌چیز در محیطی امن، محرمانه و بدون نیاز به مراجعه حضوری.
+      </p>
+      <div class="hero-cta">
+        <a href="{{ url_for('main.booking') }}" class="btn btn-accent btn-lg">📅 رزرو نوبت مشاوره</a>
+        <a href="{{ url_for('main.services') }}" class="btn btn-outline btn-lg" style="border-color:#fff;color:#fff;">مشاهده خدمات</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <h3>امغازی در یک نگاه</h3>
+      <div class="hero-stat">
+        <span class="ico">👩‍⚕️</span>
+        <div><b>{{ total_psychologists|fa_num }}</b><span>مشاور متخصص و فعال</span></div>
+      </div>
+      <div class="hero-stat">
+        <span class="ico">📞</span>
+        <div><b>{{ (total_appointments + 1250)|fa_num }}</b><span>جلسه مشاوره موفق</span></div>
+      </div>
+      <div class="hero-stat">
+        <span class="ico">😊</span>
+        <div><b>٪۹۷</b><span>رضایت کاربران از خدمات</span></div>
+      </div>
+      <div class="hero-stat">
+        <span class="ico">🕐</span>
+        <div><b>۲۴/۷</b><span>پاسخگویی شبانه‌روزی</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- خدمات مشاوره -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">خدمات ما</span>
+      <h2>خدمات مشاوره امغازی</h2>
+      <p>در هر حوزه‌ای از زندگی که به گفت‌وگوی تخصصی نیاز دارید، مشاور مناسب خود را اینجا پیدا کنید.</p>
+    </div>
+    <div class="grid grid-4">
+      {% for service in services %}
+      <div class="card service-card">
+        <div class="service-icon">{{ service.icon }}</div>
+        <div class="card-body">
+          <h3>{{ service.title }}</h3>
+          <p>{{ service.short_desc }}</p>
+          <div class="service-meta">
+            <span>⏱ {{ service.duration_minutes|fa }} دقیقه</span>
+          </div>
+          <div class="service-price">{{ service.price_display }}</div>
+          <a href="{{ url_for('main.service_detail', slug=service.slug) }}" class="btn btn-ghost btn-sm">جزئیات و رزرو</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="section-more">
+      <a href="{{ url_for('main.services') }}" class="btn btn-primary">همه خدمات مشاوره ←</a>
+    </div>
+  </div>
+</section>
+
+<!-- مشاوران -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">تیم ما</span>
+      <h2>مشاوران امغازی</h2>
+      <p>تیم امغازی متشکل از روانشناسان دارای مجوز رسمی با سال‌ها تجربه بالینی است.</p>
+    </div>
+    <div class="grid grid-4">
+      {% for psych in psychologists %}
+      <div class="card psych-card">
+        <div class="avatar">
+          {% if psych.image_url %}<img src="{{ psych.image_url }}" alt="{{ psych.name }}">{% else %}{{ psych.initials }}{% endif %}
+        </div>
+        <div class="card-body">
+          <h3>{{ psych.name }}</h3>
+          <div class="role">{{ psych.title or psych.specialty }}</div>
+          <div class="stars">★★★★★ <span style="color:var(--muted);font-size:12px;">{{ psych.rating|fa }}</span></div>
+          <div class="psych-stats">
+            <span class="chip">{{ psych.experience_years|fa }} سال تجربه</span>
+            <span class="chip chip-gold">{{ psych.consults_count|fa_num }}+ مشاوره</span>
+          </div>
+          <a href="{{ url_for('main.psychologist_detail', pid=psych.id) }}" class="btn btn-ghost btn-sm">معرفی کامل</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="section-more">
+      <a href="{{ url_for('main.psychologists') }}" class="btn btn-primary">مشاهده همه مشاوران ←</a>
+    </div>
+  </div>
+</section>
+
+<!-- مراحل رزرو -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">راهنما</span>
+      <h2>رزرو مشاوره در ۵ گام ساده</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-num">۱</div><h4>انتخاب خدمت</h4><p>خدمت موردنظر خود را از فهرست خدمات انتخاب کنید.</p></div>
+      <div class="step"><div class="step-num">۲</div><h4>انتخاب مشاور</h4><p>با توجه به تخصص و سابقه، مشاور مناسب خود را برگزینید.</p></div>
+      <div class="step"><div class="step-num">۳</div><h4>رزرو نوبت</h4><p>تاریخ و ساعت دلخواه خود را رزرو کنید.</p></div>
+      <div class="step"><div class="step-num">۴</div><h4>تأیید نوبت</h4><p>کارشناسان ما نوبت شما را بررسی و تأیید می‌کنند.</p></div>
+      <div class="step"><div class="step-num">۵</div><h4>شروع مشاوره</h4><p>در زمان مقرر، مشاور با شما تماس می‌گیرد.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- دوره‌های آموزشی -->
+{% if courses %}
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">آموزش</span>
+      <h2>دوره‌های آموزشی</h2>
+      <p>کارگاه‌ها و دوره‌های تخصصی سلامت روان با گواهینامه پایان دوره.</p>
+    </div>
+    <div class="grid grid-3">
+      {% for course in courses %}
+      <div class="card course-card">
+        <div class="thumb">{{ course.icon }}</div>
+        <div class="card-body">
+          <span class="badge badge-accent">{{ course.format }}</span>
+          <h3 style="margin-top:8px;"><a href="{{ url_for('main.course_detail', cid=course.id) }}">{{ course.title }}</a></h3>
+          <p style="font-size:13px;color:var(--muted);">{{ course.summary }}</p>
+          <div class="service-meta" style="justify-content:flex-start;">
+            <span>👨‍🏫 {{ course.teacher.name if course.teacher else 'تدریس اختصاصی' }}</span>
+            <span>🎬 {{ course.sessions_count|fa }} جلسه</span>
+          </div>
+          <div class="service-price" style="text-align:right;">{{ course.price_display }}</div>
+          <a href="{{ url_for('main.course_detail', cid=course.id) }}" class="btn btn-ghost btn-sm">مشاهده دوره</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- مقالات -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">مجله سلامت روان</span>
+      <h2>تازه‌ترین مقالات</h2>
+      <p>مطالعه‌ای کوتاه برای شناخت بهتر خود و عزیزانتان.</p>
+    </div>
+    <div class="grid grid-3">
+      {% for article in articles %}
+      <div class="card article-card">
+        <div class="thumb">{{ article.icon }}</div>
+        <div class="card-body">
+          <h3><a href="{{ url_for('main.article_detail', slug=article.slug) }}">{{ article.title }}</a></h3>
+          <p class="excerpt">{{ article.excerpt[:110] }}{% if article.excerpt|length > 110 %}...{% endif %}</p>
+          <div class="meta">
+            <span>🏷 {{ article.category }}</span>
+            <span>⏱ {{ article.reading_time|fa }} دقیقه مطالعه</span>
+            <span>👁 {{ article.views|fa_num }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="section-more">
+      <a href="{{ url_for('main.articles') }}" class="btn btn-primary">همه مقالات ←</a>
+    </div>
+  </div>
+</section>
+
+<!-- نوار فراخوان -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="cta-band">
+      <div>
+        <h2>هنوز مطمئن نیستید از کجا شروع کنید؟</h2>
+        <p>با خط ویژه امغازی تماس بگیرید؛ کارشناسان ما مسیر مناسب شما را پیشنهاد می‌دهند.</p>
+      </div>
+      <a href="tel:{{ S.get('hotline', '1548') }}" class="btn btn-accent btn-lg">☎ تماس با خط ویژه</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

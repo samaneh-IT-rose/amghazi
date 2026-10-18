@@ -1,0 +1,70 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}🗂 مدیریت شکایات{% endblock %}
+
+{% block content %}
+<div class="filter-tabs" style="margin-bottom:18px;">
+  <a href="{{ url_for('admin.complaints') }}" class="{{ 'active' if not current_status else '' }}">همه</a>
+  {% for code, label in {'new': 'ثبت شده', 'in_progress': 'در حال بررسی', 'resolved': 'حل شده', 'rejected': 'رد شده'}.items() %}
+  <a href="{{ url_for('admin.complaints', status=code) }}" class="{{ 'active' if current_status == code else '' }}">{{ label }}</a>
+  {% endfor %}
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h2>شکایات ({{ pagination.total|fa_num }} مورد)</h2></div>
+  <div class="panel-body p-0">
+    {% if pagination.items %}
+    {% for c in pagination.items %}
+    <div style="padding:16px 20px;border-bottom:1px solid var(--line);">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+        <div>
+          <b>{{ c.tracking_code|fa }}</b> — {{ c.name }}
+          <span class="status-pill status-{{ c.status }}" style="margin-inline-start:8px;">{{ c.status_label }}</span>
+          {% if c.subject %}<span style="color:var(--muted);font-size:13px;">— {{ c.subject }}</span>{% endif %}
+        </div>
+        <div style="font-size:12px;color:var(--muted);">{{ c.created_at|jalali(with_time=True) }}</div>
+      </div>
+      <div style="font-size:13.5px;color:#31413f;margin-top:8px;">{{ c.message|nl2br }}</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:8px;">☎ <span dir="ltr">{{ c.phone }}</span></div>
+
+      <form method="post" action="{{ url_for('admin.complaint_update', item_id=c.id) }}" class="form-grid" style="margin-top:12px;align-items:end;">
+        <div class="form-group" style="margin:0;">
+          <label style="font-size:12px;">تغییر وضعیت</label>
+          <select name="status" style="padding:8px 10px;font-size:13px;">
+            {% for code, label in c.STATUS_CHOICES.items() %}
+            <option value="{{ code }}" {{ 'selected' if c.status == code }}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label style="font-size:12px;">یادداشت / پاسخ به کاربر</label>
+          <input type="text" name="admin_note" value="{{ c.admin_note }}" placeholder="پاسخی که در پیگیری نمایش داده می‌شود...">
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button type="submit" class="btn btn-primary btn-sm">💾 ذخیره</button>
+        </div>
+      </form>
+      <form method="post" action="{{ url_for('admin.complaint_delete', item_id=c.id) }}" data-confirm="آیا از حذف این شکایت مطمئن هستید؟" style="margin-top:8px;">
+        <button type="submit" class="btn btn-danger btn-sm">حذف شکایت</button>
+      </form>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">🗂</div>
+      <p>شکایتی در این دسته وجود ندارد.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if pagination.pages > 1 %}
+<div class="pagination">
+  {% if pagination.has_prev %}<a href="{{ url_for('admin.complaints', page=pagination.prev_num, status=current_status) }}">→ قبلی</a>{% endif %}
+  {% for p in pagination.iter_pages() %}
+    {% if p %}<a href="{{ url_for('admin.complaints', page=p, status=current_status) }}" class="{{ 'active' if p == pagination.page else '' }}">{{ p|fa }}</a>{% else %}<span class="disabled">…</span>{% endif %}
+  {% endfor %}
+  {% if pagination.has_next %}<a href="{{ url_for('admin.complaints', page=pagination.next_num, status=current_status) }}">بعدی ←</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block admin_title %}پنل مدیریت{% endblock %} | امغازی</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="admin-layout">
+  <!-- سایدبار -->
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <div class="brand-logo">🌿</div>
+      <div>
+        <b>امغازی</b>
+        <span>پنل مدیریت محتوا</span>
+      </div>
+    </div>
+    <ul class="admin-menu">
+      <li><a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.path == '/admin/' or request.path == '/admin' else '' }}">📊 داشبورد</a></li>
+      <li><a href="{{ url_for('admin.services') }}" class="{{ 'active' if request.path.startswith('/admin/services') else '' }}">🌿 خدمات</a></li>
+      <li><a href="{{ url_for('admin.psychologists') }}" class="{{ 'active' if request.path.startswith('/admin/psychologists') else '' }}">👩‍⚕️ مشاوران</a></li>
+      <li><a href="{{ url_for('admin.courses') }}" class="{{ 'active' if request.path.startswith('/admin/courses') else '' }}">🎓 دوره‌های آموزشی</a></li>
+      <li><a href="{{ url_for('admin.articles') }}" class="{{ 'active' if request.path.startswith('/admin/articles') else '' }}">📰 مقالات</a></li>
+      <li><a href="{{ url_for('admin.appointments') }}" class="{{ 'active' if request.path.startswith('/admin/appointments') else '' }}">📅 نوبت‌ها</a></li>
+      <li><a href="{{ url_for('admin.messages') }}" class="{{ 'active' if request.path.startswith('/admin/messages') else '' }}">✉️ پیام‌ها {% if unread_messages %}<span class="badge-count">{{ unread_messages|fa }}</span>{% endif %}</a></li>
+      <li><a href="{{ url_for('admin.complaints') }}" class="{{ 'active' if request.path.startswith('/admin/complaints') else '' }}">🗂 شکایات</a></li>
+      <li><a href="{{ url_for('admin.newsletter') }}" class="{{ 'active' if request.path.startswith('/admin/newsletter') else '' }}">📮 خبرنامه</a></li>
+      <li><a href="{{ url_for('admin.settings') }}" class="{{ 'active' if request.path.startswith('/admin/settings') else '' }}">⚙️ تنظیمات</a></li>
+      <li style="margin-top:14px;border-top:1px solid rgba(255,255,255,.14);padding-top:12px;"><a href="{{ url_for('main.index') }}" target="_blank">🌍 مشاهده سایت</a></li>
+      <li><a href="{{ url_for('admin.logout') }}" style="color:#f5b7b1;">🚪 خروج</a></li>
+    </ul>
+  </aside>
+
+  <!-- محتوای اصلی -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1>{% block page_title %}{% endblock %}</h1>
+      <div class="admin-user">
+        <div class="avatar">{{ (session.get('admin_name') or 'مدیر')[:1] }}</div>
+        <div>
+          <div style="font-weight:700;color:var(--ink);">{{ session.get('admin_name', 'مدیر') }}</div>
+          <div>کاربر مدیر</div>
+        </div>
+      </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-stack">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'error' if category == 'error' else 'success' }}">{{ '⚠ ' if category == 'error' else '✅ ' }}{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

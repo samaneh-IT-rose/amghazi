@@ -1,0 +1,62 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}📰 مدیریت مقالات{% endblock %}
+
+{% block content %}
+<div class="toolbar" style="margin-bottom:18px;">
+  <a href="{{ url_for('admin.article_new') }}" class="btn btn-primary">+ نوشتن مقاله جدید</a>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h2>فهرست مقالات ({{ pagination.total|fa_num }})</h2></div>
+  <div class="panel-body p-0 table-wrap">
+    {% if pagination.items %}
+    <table class="table">
+      <thead>
+        <tr><th>#</th><th>عنوان</th><th>دسته</th><th>نویسنده</th><th>بازدید</th><th>تاریخ</th><th>وضعیت</th><th>عملیات</th></tr>
+      </thead>
+      <tbody>
+        {% for item in pagination.items %}
+        <tr>
+          <td>{{ loop.index|fa }}</td>
+          <td>
+            {{ item.icon }} <b>{{ item.title[:50] }}{% if item.title|length > 50 %}...{% endif %}</b><br>
+            <span style="font-size:11.5px;color:var(--muted);">{{ item.excerpt[:70] }}</span>
+          </td>
+          <td><span class="badge badge-primary">{{ item.category }}</span></td>
+          <td>{{ item.author }}</td>
+          <td>{{ item.views|fa_num }}</td>
+          <td>{{ item.created_at|jalali }}</td>
+          <td><span class="status-pill {{ 'status-done' if item.is_published else 'status-pending' }}">{{ 'منتشر شده' if item.is_published else 'پیش‌نویس' }}</span></td>
+          <td>
+            <div class="action-cell">
+              <a href="{{ url_for('main.article_detail', slug=item.slug) }}" class="icon-btn" target="_blank" title="مشاهده">👁</a>
+              <a href="{{ url_for('admin.article_edit', item_id=item.id) }}" class="icon-btn" title="ویرایش">✏️</a>
+              <form method="post" action="{{ url_for('admin.article_delete', item_id=item.id) }}" data-confirm="آیا از حذف این مقاله مطمئن هستید؟" style="display:inline;">
+                <button type="submit" class="icon-btn danger" title="حذف">🗑</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">📰</div>
+      <p>مقاله‌ای ثبت نشده است.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if pagination.pages > 1 %}
+<div class="pagination">
+  {% if pagination.has_prev %}<a href="{{ url_for('admin.articles', page=pagination.prev_num) }}">→ قبلی</a>{% endif %}
+  {% for p in pagination.iter_pages() %}
+    {% if p %}<a href="{{ url_for('admin.articles', page=p) }}" class="{{ 'active' if p == pagination.page else '' }}">{{ p|fa }}</a>{% else %}<span class="disabled">…</span>{% endif %}
+  {% endfor %}
+  {% if pagination.has_next %}<a href="{{ url_for('admin.articles', page=pagination.next_num) }}">بعدی ←</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

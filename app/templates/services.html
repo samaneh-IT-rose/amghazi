@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}خدمات مشاوره | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / خدمات مشاوره</div>
+    <h1>خدمات مشاوره امغازی</h1>
+    <p>خدمات تخصصی مشاوره در حوزه‌های مختلف زندگی، خانواده و سلامت روان</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:10px;">
+  <div class="container">
+    {% if services %}
+    <div class="grid grid-3">
+      {% for service in services %}
+      <div class="card service-card">
+        <div class="service-icon">{{ service.icon }}</div>
+        <div class="card-body">
+          <h3>{{ service.title }}</h3>
+          <p>{{ service.short_desc }}</p>
+          <div class="service-meta">
+            <span>⏱ {{ service.duration_minutes|fa }} دقیقه</span>
+            <span>📞 تلفنی / آنلاین</span>
+          </div>
+          <div class="service-price">{{ service.price_display }}</div>
+          <div style="display:flex;gap:8px;justify-content:center;">
+            <a href="{{ url_for('main.service_detail', slug=service.slug) }}" class="btn btn-ghost btn-sm">جزئیات</a>
+            <a href="{{ url_for('main.booking', service=service.id) }}" class="btn btn-primary btn-sm">رزرو نوبت</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state card">
+      <div class="ico">🌱</div>
+      <p>هنوز خدمتی ثبت نشده است. به‌زودی خدمات جدید اضافه می‌شوند.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

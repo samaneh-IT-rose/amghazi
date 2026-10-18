@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}رزرو نوبت مشاوره | امغازی{% endblock %}
+
+{% block body %}
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('main.index') }}">صفحه اصلی</a> / رزرو نوبت</div>
+    <h1>📅 رزرو نوبت مشاوره</h1>
+    <p>فرم زیر را تکمیل کنید؛ کارشناسان ما برای هماهنگی نهایی با شما تماس می‌گیرند.</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container" style="max-width:760px;">
+    {% if errors %}
+      {% for error in errors %}
+      <div class="alert alert-error">⚠ {{ error }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="form-card">
+      <form method="post" action="{{ url_for('main.booking') }}">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>نام و نام خانوادگی <span class="req">*</span></label>
+            <input type="text" name="full_name" value="{{ form.get('full_name', '') }}" placeholder="مثال: سارا محمدی" required>
+          </div>
+          <div class="form-group">
+            <label>شماره تماس <span class="req">*</span></label>
+            <input type="tel" name="phone" value="{{ form.get('phone', '') }}" placeholder="مثال: 09121234567" required>
+            <div class="help-text">فقط رقم وارد کنید؛ مشاور در این شماره با شما تماس می‌گیرد.</div>
+          </div>
+          <div class="form-group">
+            <label>خدمت موردنظر <span class="req">*</span></label>
+            <select name="service_id" id="service_id" required>
+              <option value="">— انتخاب کنید —</option>
+              {% for service in services %}
+              <option value="{{ service.id }}" data-price="{{ service.price_display }}"
+                {{ 'selected' if (form.get('service_id')|int == service.id) or (preselect == service.id) }}>
+                {{ service.title }}
+              </option>
+              {% endfor %}
+            </select>
+            <div class="help-text">تعرفه انتخابی: <b id="price-hint">—</b></div>
+          </div>
+          <div class="form-group">
+            <label>مشاور موردنظر (اختیاری)</label>
+            <select name="psychologist_id">
+              <option value="">— فرقی ندارد / پیشنهاد سامانه —</option>
+              {% for psych in psychologists %}
+              <option value="{{ psych.id }}" {{ 'selected' if form.get('psychologist_id')|int == psych.id }}>
+                {{ psych.name }} ({{ psych.specialty or psych.title }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>تاریخ پیشنهادی (شمسی)</label>
+            <input type="text" name="preferred_date" value="{{ form.get('preferred_date', '') }}" placeholder="مثال: ۱۴۰۴/۰۸/۱۵">
+          </div>
+          <div class="form-group">
+            <label>ساعت پیشنهادی</label>
+            <input type="text" name="preferred_time" value="{{ form.get('preferred_time', '') }}" placeholder="مثال: ۱۰ صبح">
+          </div>
+          <div class="form-group full">
+            <label>توضیحات (اختیاری)</label>
+            <textarea name="note" placeholder="اگر نکته‌ای درباره درخواست خود دارید بنویسید...">{{ form.get('note', '') }}</textarea>
+            <div class="help-text">اطلاعات شما کاملاً محرمانه باقی می‌ماند.</div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block">ثبت درخواست رزرو</button>
+      </form>
+    </div>
+
+    <div class="side-box" style="margin-top:22px;background:var(--accent-soft);">
+      <h3 style="border-color:#f2ddb8;">چگونه نوبت شما تأیید می‌شود؟</h3>
+      <p style="font-size:13.5px;color:#6b5620;">
+        پس از ثبت فرم، کارشناسان امغازی حداکثر طی چند ساعت کاری با شما تماس می‌گیرند و زمان دقیق جلسه را نهایی می‌کنند.
+        کد پیگیری برای شما نمایش داده خواهد شد.
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

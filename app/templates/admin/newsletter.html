@@ -1,0 +1,40 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}📮 اعضای خبرنامه{% endblock %}
+
+{% block content %}
+<div class="toolbar" style="margin-bottom:18px;justify-content:space-between;">
+  <span style="font-size:13.5px;color:var(--muted);">تعداد کل اعضا: <b>{{ subscribers|length|fa_num }}</b> نفر</span>
+  <a href="{{ url_for('admin.newsletter_export') }}" class="btn btn-ghost">⬇ دانلود CSV</a>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h2>فهرست ایمیل‌ها</h2></div>
+  <div class="panel-body p-0 table-wrap">
+    {% if subscribers %}
+    <table class="table">
+      <thead><tr><th>#</th><th>ایمیل</th><th>تاریخ عضویت</th><th>عملیات</th></tr></thead>
+      <tbody>
+        {% for sub in subscribers %}
+        <tr>
+          <td>{{ loop.index|fa }}</td>
+          <td dir="ltr" style="text-align:right;">{{ sub.email }}</td>
+          <td>{{ sub.created_at|jalali }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.newsletter_delete', item_id=sub.id) }}" data-confirm="حذف این عضو؟" style="display:inline;">
+              <button type="submit" class="icon-btn danger" title="حذف">🗑</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">📮</div>
+      <p>هنوز کسی در خبرنامه عضو نشده است.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

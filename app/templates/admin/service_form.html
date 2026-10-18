@@ -1,0 +1,54 @@
+{% extends "admin/base_admin.html" %}
+
+{% block page_title %}{{ 'ویرایش خدمت: ' ~ item.title if item else 'افزودن خدمت جدید' }}{% endblock %}
+
+{% block content %}
+<div class="panel" style="max-width:760px;">
+  <div class="panel-head">
+    <h2>{{ 'ویرایش خدمت' if item else 'خدمت جدید' }}</h2>
+    <a href="{{ url_for('admin.services') }}" class="btn btn-ghost btn-sm">← بازگشت به فهرست</a>
+  </div>
+  <div class="panel-body">
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>عنوان خدمت <span class="req">*</span></label>
+          <input type="text" name="title" value="{{ item.title if item else '' }}" required placeholder="مثال: مشاوره فردی">
+        </div>
+        <div class="form-group">
+          <label>آیکون (ایموجی)</label>
+          <input type="text" name="icon" value="{{ item.icon if item else '🌿' }}" maxlength="4" placeholder="🌿">
+        </div>
+        <div class="form-group">
+          <label>تعرفه (تومان) — خالی یا صفر = «تماس بگیرید»</label>
+          <input type="number" name="price" value="{{ item.price if item else 0 }}" min="0" step="1000">
+        </div>
+        <div class="form-group">
+          <label>مدت هر جلسه (دقیقه)</label>
+          <input type="number" name="duration_minutes" value="{{ item.duration_minutes if item else 45 }}" min="10">
+        </div>
+        <div class="form-group">
+          <label>ترتیب نمایش</label>
+          <input type="number" name="sort_order" value="{{ item.sort_order if item else 0 }}">
+        </div>
+        <div class="form-group full">
+          <label>توضیح کوتاه (نمایش در کارت‌ها)</label>
+          <textarea name="short_desc" style="min-height:70px;" maxlength="300" placeholder="یک یا دو جمله معرفی خدمت...">{{ item.short_desc if item else '' }}</textarea>
+        </div>
+        <div class="form-group full">
+          <label>شرح کامل خدمت</label>
+          <textarea name="description" style="min-height:220px;" placeholder="توضیح کامل خدمت... (HTML ساده مجاز است)">{{ item.description if item else '' }}</textarea>
+          <div class="help-text">می‌توانید از تگ‌های ساده مثل p، h2، ul، li و b استفاده کنید.</div>
+        </div>
+        <div class="form-group">
+          <div class="checkbox-row">
+            <input type="checkbox" name="is_active" id="is_active" {{ 'checked' if (item and item.is_active) or not item }}>
+            <label for="is_active">فعال باشد (در سایت نمایش داده شود)</label>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg">💾 ذخیره</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
